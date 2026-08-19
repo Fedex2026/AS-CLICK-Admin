@@ -11238,7 +11238,7 @@ $("manualServiceForm")?.addEventListener("submit", async event => {
 
  
 
-      tipo,
+      tipo: type,
 
  
 
