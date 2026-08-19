@@ -1,5 +1,3 @@
- 
-
 import {
 
   collection,
@@ -11,6 +9,8 @@ import {
   onSnapshot,
 
   updateDoc,
+
+  setDoc,
 
   serverTimestamp
 
@@ -1395,6 +1395,20 @@ function renderDashboard(){
  
 
   renderActivity();
+
+ 
+
+  if(!$("viewServicios")?.hidden){
+
+    renderServicesModule();
+
+  }
+
+ 
+
+  fillClientSelect();
+
+  fillProviderSelect();
 
  
 
@@ -4862,121 +4876,137 @@ $("menuButton")
 
 /* =========================================================
 
-   MENÚ
+   NAVEGACIÓN DE MÓDULOS
 
    ========================================================= */
 
  
 
-document
+const moduleMap = {
 
-  .querySelectorAll(
+  inicio: "viewInicio",
 
-    ".nav-item"
+  servicios: "viewServicios",
 
-  )
+  "crear-servicio": "viewCrearServicio"
 
-  .forEach(
-
-    item => {
+};
 
  
 
-      item.addEventListener(
+function showModule(section){
 
-        "click",
-
-        event => {
+  const targetId = moduleMap[section];
 
  
 
-          event.preventDefault();
+  if(!targetId){
+
+    alert(`El módulo "${section}" se conectará después.`);
+
+    return;
+
+  }
 
  
 
- 
+  document.querySelectorAll(".module-view").forEach(view => {
 
-          document
+    view.hidden = view.id !== targetId;
 
-            .querySelectorAll(
-
-              ".nav-item"
-
-            )
-
-            .forEach(
-
-              nav =>
-
-                nav.classList.remove(
-
-                  "active"
-
-                )
-
-            );
+  });
 
  
 
- 
+  document.querySelectorAll(".nav-item").forEach(nav => {
 
-          item.classList.add(
+    nav.classList.toggle("active", nav.dataset.section === section);
 
-            "active"
-
-          );
+  });
 
  
 
- 
-
-          const section =
-
-            item.dataset.section;
+  document.body.classList.remove("sidebar-open");
 
  
 
- 
+  if(section === "servicios"){
 
-          if(
+    renderServicesModule();
 
-            section !== "inicio"
-
-          ){
+  }
 
  
 
-            alert(
+  if(section === "crear-servicio"){
 
-              `El módulo "${item.textContent.trim()}" se conectará en la siguiente etapa.`
+    prepareManualServiceForm();
 
-            );
+  }
 
- 
-
-          }
+}
 
  
 
- 
+document.querySelectorAll(".nav-item").forEach(item => {
 
-          document.body.classList.remove(
+  item.addEventListener("click", event => {
 
-            "sidebar-open"
+    event.preventDefault();
 
-          );
+    showModule(item.dataset.section);
 
- 
+  });
 
-        }
-
-      );
+});
 
  
 
-    }
+$("viewAllServices")?.addEventListener("click", () => showModule("servicios"));
 
-  );
+$("openCreateServiceFromServices")?.addEventListener("click", () => showModule("crear-servicio"));
+
+$("backToServices")?.addEventListener("click", () => showModule("servicios"));
+
+ 
+
+$("viewAllProviders")?.addEventListener("click", () => {
+
+  alert("El módulo completo de Proveedores se conectará después.");
+
+});
+
+ 
+
+$("manageClients")?.addEventListener("click", () => {
+
+  alert("El módulo de Clientes y Membresías se conectará después.");
+
+});
+
+ 
+
+$("viewEmergencies")?.addEventListener("click", () => {
+
+  alert("El módulo de Emergencias se conectará después.");
+
+});
+
+ 
+
+$("viewFullMap")?.addEventListener("click", () => {
+
+  alert("El mapa completo de proveedores se conectará después.");
+
+});
+
+ 
+
+$("viewFullReport")?.addEventListener("click", () => {
+
+  alert("El módulo de Reportes se conectará después.");
+
+});
 
  
 
@@ -4984,165 +5014,783 @@ document
 
 /* =========================================================
 
-   BOTONES GENERALES
+   MÓDULO COMPLETO DE SERVICIOS
 
    ========================================================= */
 
  
 
-$("viewAllServices")
+function normalizedStatus(value){
 
-  ?.addEventListener(
+  return normalizeText(value).replace(/\s+/g, "_");
 
-    "click",
-
-    () => {
+}
 
  
 
-      alert(
+function isActiveServiceStatus(value){
 
-        "Aquí abriremos el módulo completo de Servicios."
+  return [
 
-      );
+    "asignado",
+
+    "aceptado",
+
+    "en_camino",
+
+    "arribo",
+
+    "en_sitio",
+
+    "en_proceso",
+
+    "en_traslado",
+
+    "destino"
+
+  ].includes(normalizedStatus(value));
+
+}
 
  
+
+function isPendingServiceStatus(value){
+
+  return ["pendiente", "pendiente_cabina", "solicitado"].includes(normalizedStatus(value));
+
+}
+
+ 
+
+function serviceSearchText(service){
+
+  return normalizeText([
+
+    getFolio(service),
+
+    getClientName(service),
+
+    getProviderName(service),
+
+    getServiceType(service),
+
+    service.cliente?.telefono,
+
+    service.telefonoCliente
+
+  ].filter(Boolean).join(" "));
+
+}
+
+ 
+
+function dateInputValue(value){
+
+  const date = toDate(value);
+
+  if(!date) return "";
+
+  const year = date.getFullYear();
+
+  const month = String(date.getMonth()+1).padStart(2,"0");
+
+  const day = String(date.getDate()).padStart(2,"0");
+
+  return `${year}-${month}-${day}`;
+
+}
+
+ 
+
+function renderServicesModule(){
+
+  const body = $("allServicesTableBody");
+
+  if(!body) return;
+
+ 
+
+  const all = [...state.solicitudes].sort((a,b) => getServiceDate(b)-getServiceDate(a));
+
+  const total = all.length;
+
+  const pending = all.filter(s => isPendingServiceStatus(s.estado)).length;
+
+  const active = all.filter(s => isActiveServiceStatus(s.estado)).length;
+
+  const finished = all.filter(s => normalizedStatus(s.estado) === "finalizado").length;
+
+  const cancelled = all.filter(s => ["cancelado","cancelada"].includes(normalizedStatus(s.estado))).length;
+
+ 
+
+  setText("servicesModuleTotal", total);
+
+  setText("servicesModulePending", pending);
+
+  setText("servicesModuleActive", active);
+
+  setText("servicesModuleFinished", finished);
+
+  setText("servicesModuleCancelled", cancelled);
+
+ 
+
+  const search = normalizeText($("serviceSearch")?.value || "");
+
+  const type = normalizeText($("serviceTypeFilter")?.value || "");
+
+  const status = normalizedStatus($("serviceStatusFilter")?.value || "");
+
+  const date = $("serviceDateFilter")?.value || "";
+
+ 
+
+  const filtered = all.filter(service => {
+
+    const serviceType = normalizeText(getServiceType(service)).replace(/\s+/g,"_");
+
+    const currentStatus = normalizedStatus(service.estado);
+
+    const matchesSearch = !search || serviceSearchText(service).includes(search);
+
+    const matchesType = !type || serviceType.includes(type);
+
+    const matchesStatus = !status || currentStatus === status;
+
+    const matchesDate = !date || dateInputValue(service.creadoEn || service.fechaCreacion || service.actualizadoEn) === date;
+
+    return matchesSearch && matchesType && matchesStatus && matchesDate;
+
+  });
+
+ 
+
+  if(!filtered.length){
+
+    body.innerHTML = `<tr class="empty-row"><td colspan="8">No hay servicios que coincidan con los filtros.</td></tr>`;
+
+    return;
+
+  }
+
+ 
+
+  body.innerHTML = filtered.map(service => `
+
+    <tr class="service-module-row" data-service-id="${escapeHtml(service.id)}">
+
+      <td><strong>${escapeHtml(getFolio(service))}</strong></td>
+
+      <td>${escapeHtml(formatDateTime(service.creadoEn || service.fechaCreacion))}</td>
+
+      <td>${escapeHtml(getClientName(service))}</td>
+
+      <td>${escapeHtml(formatServiceType(getServiceType(service)))}</td>
+
+      <td>${escapeHtml(getProviderName(service))}</td>
+
+      <td><span class="status-badge ${statusClass(service.estado)}">${escapeHtml(formatStatus(service.estado))}</span></td>
+
+      <td>${escapeHtml(calculateServiceTime(service))}</td>
+
+      <td><button type="button" class="table-action-button" data-open-service="${escapeHtml(service.id)}">Ver detalle</button></td>
+
+    </tr>
+
+  `).join("");
+
+ 
+
+  body.querySelectorAll("[data-open-service]").forEach(button => {
+
+    button.addEventListener("click", event => {
+
+      event.stopPropagation();
+
+      openServiceDetail(button.dataset.openService);
+
+    });
+
+  });
+
+ 
+
+  body.querySelectorAll(".service-module-row").forEach(row => {
+
+    row.addEventListener("click", () => openServiceDetail(row.dataset.serviceId));
+
+  });
+
+}
+
+ 
+
+["serviceSearch","serviceTypeFilter","serviceStatusFilter","serviceDateFilter"].forEach(id => {
+
+  $(id)?.addEventListener(id === "serviceSearch" ? "input" : "change", renderServicesModule);
+
+});
+
+ 
+
+$("clearServiceFilters")?.addEventListener("click", () => {
+
+  if($("serviceSearch")) $("serviceSearch").value = "";
+
+  if($("serviceTypeFilter")) $("serviceTypeFilter").value = "";
+
+  if($("serviceStatusFilter")) $("serviceStatusFilter").value = "";
+
+  if($("serviceDateFilter")) $("serviceDateFilter").value = "";
+
+  renderServicesModule();
+
+});
+
+ 
+
+ 
+
+/* =========================================================
+
+   CREAR SERVICIO MANUAL
+
+   ========================================================= */
+
+ 
+
+function compatibleProvider(provider, serviceType){
+
+  if(provider.activo !== true) return false;
+
+  if(provider.ocupado === true) return false;
+
+  if(provider.disponible !== true && normalizeText(provider.estadoConexion) !== "disponible") return false;
+
+ 
+
+  const providerType = normalizeText(
+
+    provider.tipoProveedor || provider.tipoServicio || provider.tipo || provider.servicio
+
+  ).replace(/\s+/g,"_");
+
+ 
+
+  const target = normalizeText(serviceType).replace(/\s+/g,"_");
+
+  return !providerType || providerType === target || providerType.includes(target) || target.includes(providerType);
+
+}
+
+ 
+
+function fillClientSelect(){
+
+  const select = $("manualClientSelect");
+
+  if(!select) return;
+
+ 
+
+  const current = select.value;
+
+  const clients = state.usuarios
+
+    .filter(user => normalizeText(user.rol || "cliente") !== "admin")
+
+    .sort((a,b) => String(a.nombre || a.correo || "").localeCompare(String(b.nombre || b.correo || ""), "es"));
+
+ 
+
+  select.innerHTML = `<option value="">Cliente sin seleccionar / captura manual</option>` + clients.map(client => `
+
+    <option value="${escapeHtml(client.id)}">${escapeHtml(client.nombre || client.nombreCompleto || client.correo || client.id)}</option>
+
+  `).join("");
+
+ 
+
+  if(clients.some(c => c.id === current)) select.value = current;
+
+}
+
+ 
+
+function fillProviderSelect(){
+
+  const select = $("manualProviderSelect");
+
+  if(!select) return;
+
+ 
+
+  const serviceType = $("manualServiceType")?.value || "ajustador";
+
+  const providers = state.proveedores
+
+    .filter(provider => compatibleProvider(provider, serviceType))
+
+    .sort((a,b) => Number(b.calificacion || 0) - Number(a.calificacion || 0));
+
+ 
+
+  select.innerHTML = `<option value="">Selecciona proveedor disponible</option>` + providers.map(provider => `
+
+    <option value="${escapeHtml(provider.id)}">${escapeHtml(provider.nombre || provider.nombreCompleto || provider.correo || "Proveedor")} · ${escapeHtml(provider.municipio || "Sin municipio")} · ⭐ ${escapeHtml(provider.calificacion ?? "—")}</option>
+
+  `).join("");
+
+ 
+
+  setText("manualProviderHint", providers.length
+
+    ? `${providers.length} proveedor(es) disponible(s) y compatible(s).`
+
+    : "No hay proveedores disponibles compatibles en este momento.");
+
+}
+
+ 
+
+function setTowFieldsVisibility(){
+
+  const isTow = ($("manualServiceType")?.value || "") === "grua";
+
+  document.querySelectorAll(".tow-manual-field").forEach(el => el.hidden = !isTow);
+
+  if($("manualDestination")) $("manualDestination").required = isTow;
+
+}
+
+ 
+
+function getAssignmentMode(){
+
+  return document.querySelector('input[name="manualAssignmentMode"]:checked')?.value || "automatico";
+
+}
+
+ 
+
+function updateManualSummary(){
+
+  setText("summaryClient", $("manualClientName")?.value.trim() || "Sin capturar");
+
+  setText("summaryService", formatServiceType($("manualServiceType")?.value || "ajustador"));
+
+  setText("summaryOrigin", $("manualOrigin")?.value.trim() || "Sin capturar");
+
+ 
+
+  const mode = getAssignmentMode();
+
+  if(mode === "manual"){
+
+    const option = $("manualProviderSelect")?.selectedOptions?.[0];
+
+    setText("summaryAssignment", option && option.value ? option.textContent : "Manual / sin proveedor");
+
+  }else{
+
+    setText("summaryAssignment", "Automática");
+
+  }
+
+ 
+
+  setText("summaryCost", formatMoney(Number($("manualCost")?.value || 0)));
+
+}
+
+ 
+
+function prepareManualServiceForm(){
+
+  fillClientSelect();
+
+  fillProviderSelect();
+
+  setTowFieldsVisibility();
+
+  updateManualSummary();
+
+}
+
+ 
+
+$("manualClientSelect")?.addEventListener("change", () => {
+
+  const client = state.usuarios.find(user => user.id === $("manualClientSelect").value);
+
+  if(client){
+
+    if($("manualClientName")) $("manualClientName").value = client.nombre || client.nombreCompleto || "";
+
+    if($("manualClientPhone")) $("manualClientPhone").value = client.telefono || "";
+
+    if($("manualClientEmail")) $("manualClientEmail").value = client.correo || client.email || "";
+
+    if($("manualMembership")) $("manualMembership").value = client.estadoMembresia === "activa" || client.tieneMembresia === true ? "activa" : "sin_membresia";
+
+  }
+
+  updateManualSummary();
+
+});
+
+ 
+
+$("manualServiceChoices")?.querySelectorAll(".service-choice").forEach(button => {
+
+  button.addEventListener("click", () => {
+
+    $("manualServiceChoices")?.querySelectorAll(".service-choice").forEach(item => item.classList.remove("active"));
+
+    button.classList.add("active");
+
+    if($("manualServiceType")) $("manualServiceType").value = button.dataset.service;
+
+    setTowFieldsVisibility();
+
+    fillProviderSelect();
+
+    updateManualSummary();
+
+  });
+
+});
+
+ 
+
+document.querySelectorAll('input[name="manualAssignmentMode"]').forEach(radio => {
+
+  radio.addEventListener("change", () => {
+
+    const manual = getAssignmentMode() === "manual";
+
+    if($("manualProviderBlock")) $("manualProviderBlock").hidden = !manual;
+
+    if(manual) fillProviderSelect();
+
+    updateManualSummary();
+
+  });
+
+});
+
+ 
+
+["manualClientName","manualOrigin","manualCost","manualProviderSelect"].forEach(id => {
+
+  $(id)?.addEventListener(id === "manualProviderSelect" ? "change" : "input", updateManualSummary);
+
+});
+
+ 
+
+function generateManualFolio(){
+
+  const now = new Date();
+
+  const yy = String(now.getFullYear()).slice(-2);
+
+  const mm = String(now.getMonth()+1).padStart(2,"0");
+
+  const dd = String(now.getDate()).padStart(2,"0");
+
+  const random = String(Math.floor(1000 + Math.random()*9000));
+
+  return `ASC-${yy}${mm}${dd}-${random}`;
+
+}
+
+ 
+
+function manualServiceMessage(message, type="error"){
+
+  const box = $("manualServiceMessage");
+
+  if(!box) return;
+
+  box.hidden = false;
+
+  box.className = `manual-service-message ${type}`;
+
+  box.textContent = message;
+
+}
+
+ 
+
+$("manualServiceForm")?.addEventListener("submit", async event => {
+
+  event.preventDefault();
+
+ 
+
+  const button = $("createManualServiceButton");
+
+  if(button?.disabled) return;
+
+ 
+
+  const name = $("manualClientName")?.value.trim() || "";
+
+  const phone = $("manualClientPhone")?.value.trim() || "";
+
+  const origin = $("manualOrigin")?.value.trim() || "";
+
+  const type = $("manualServiceType")?.value || "ajustador";
+
+  const isTow = type === "grua";
+
+  const destination = $("manualDestination")?.value.trim() || "";
+
+  const assignmentMode = getAssignmentMode();
+
+  const providerId = assignmentMode === "manual" ? ($("manualProviderSelect")?.value || "") : "";
+
+ 
+
+  if(!name || !phone || !origin){
+
+    manualServiceMessage("Captura nombre, teléfono y origen del servicio.");
+
+    return;
+
+  }
+
+ 
+
+  if(isTow && !destination){
+
+    manualServiceMessage("Para una grúa debes indicar el destino.");
+
+    return;
+
+  }
+
+ 
+
+  if(assignmentMode === "manual" && !providerId){
+
+    manualServiceMessage("Selecciona el proveedor que vas a asignar manualmente.");
+
+    return;
+
+  }
+
+ 
+
+  const provider = state.proveedores.find(item => item.id === providerId);
+
+  const selectedClientId = $("manualClientSelect")?.value || "";
+
+  const folio = generateManualFolio();
+
+  const requestRef = doc(collection(db,"solicitudes"));
+
+ 
+
+  const payload = {
+
+    folioOficial: folio,
+
+    folio,
+
+    uidCliente: selectedClientId,
+
+    cliente: {
+
+      nombre: name,
+
+      telefono: phone,
+
+      correo: $("manualClientEmail")?.value.trim() || "",
+
+      membresia: $("manualMembership")?.value || "sin_membresia"
+
+    },
+
+    servicio: {
+
+      tipo,
+
+      nombre: formatServiceType(type)
+
+    },
+
+    tipoServicio: type,
+
+    vehiculo: {
+
+      marca: $("manualVehicleBrand")?.value.trim() || "",
+
+      subMarca: $("manualVehicleModel")?.value.trim() || "",
+
+      color: $("manualVehicleColor")?.value.trim() || "",
+
+      placas: $("manualVehiclePlates")?.value.trim() || ""
+
+    },
+
+    origen: {
+
+      texto: origin
+
+    },
+
+    destino: isTow ? { texto: destination } : null,
+
+    grua: isTow ? {
+
+      chocado: $("manualDamaged")?.checked === true,
+
+      descompuesto: $("manualBroken")?.checked === true,
+
+      liberado: $("manualReleased")?.checked === true,
+
+      tieneCarga: $("manualHasLoad")?.checked === true
+
+    } : null,
+
+    canal: $("manualChannel")?.value || "telefono",
+
+    observaciones: $("manualNotes")?.value.trim() || "",
+
+    costoServicio: Number($("manualCost")?.value || 0),
+
+    creadoPorAdmin: state.user?.uid || "",
+
+    nombreAdmin: state.admin?.nombre || state.admin?.nombreCompleto || "Administrador",
+
+    origenRegistro: "admin_manual",
+
+    creadoEn: serverTimestamp(),
+
+    actualizadoEn: serverTimestamp(),
+
+    estado: provider ? "asignado" : "pendiente_cabina",
+
+    asignacion: provider ? {
+
+      uidProveedor: provider.id,
+
+      nombreProveedor: provider.nombre || provider.nombreCompleto || provider.correo || "Proveedor AS CLICK"
+
+    } : {
+
+      uidProveedor: "",
+
+      nombreProveedor: ""
+
+    },
+
+    fechaAsignacion: provider ? serverTimestamp() : null
+
+  };
+
+ 
+
+  try{
+
+    if(button){
+
+      button.disabled = true;
+
+      button.textContent = "Creando servicio...";
 
     }
 
-  );
+ 
+
+    await setDoc(requestRef, payload);
 
  
 
- 
+    if(provider){
 
-$("viewAllProviders")
+      await updateDoc(doc(db,"proveedores",provider.id), {
 
-  ?.addEventListener(
+        ocupado: true,
 
-    "click",
+        disponible: false,
 
-    () => {
+        servicioActualId: requestRef.id,
 
- 
+        ultimaActualizacion: serverTimestamp()
 
-      alert(
-
-        "Aquí abriremos la administración completa de proveedores."
-
-      );
-
- 
+      });
 
     }
 
-  );
+ 
+
+    addActivity(
+
+      state.admin?.nombre || "Administrador",
+
+      "Servicio manual creado",
+
+      `${folio} · ${formatServiceType(type)}`
+
+    );
 
  
 
- 
-
-$("manageClients")
-
-  ?.addEventListener(
-
-    "click",
-
-    () => {
+    manualServiceMessage(`Servicio ${folio} creado correctamente.`, "success");
 
  
 
-      alert(
+    setTimeout(() => {
 
-        "Aquí abriremos Clientes y Membresías."
+      event.target.reset();
 
-      );
+      if($("manualServiceType")) $("manualServiceType").value = "ajustador";
+
+      $("manualServiceChoices")?.querySelectorAll(".service-choice").forEach((item,index) => item.classList.toggle("active", index === 0));
+
+      if($("manualProviderBlock")) $("manualProviderBlock").hidden = true;
+
+      setTowFieldsVisibility();
+
+      updateManualSummary();
+
+      showModule("servicios");
+
+    }, 900);
 
  
+
+  }catch(error){
+
+    console.error("Error creando servicio manual:", error);
+
+    manualServiceMessage(
+
+      error?.code === "permission-denied" || error?.code === "firestore/permission-denied"
+
+        ? "Firestore no permitió crear el servicio manual. Falta habilitar el permiso de creación para administrador en las reglas."
+
+        : "No fue posible crear el servicio. Revisa la consola y vuelve a intentarlo."
+
+    );
+
+  }finally{
+
+    if(button){
+
+      button.disabled = false;
+
+      button.textContent = "Crear y enviar servicio";
 
     }
 
-  );
+  }
 
- 
-
- 
-
-$("viewEmergencies")
-
-  ?.addEventListener(
-
-    "click",
-
-    () => {
-
- 
-
-      alert(
-
-        "Aquí abriremos Emergencias en tiempo real."
-
-      );
-
- 
-
-    }
-
-  );
-
- 
-
- 
-
-$("viewFullMap")
-
-  ?.addEventListener(
-
-    "click",
-
-    () => {
-
- 
-
-      alert(
-
-        "Aquí abriremos el mapa completo de proveedores."
-
-      );
-
- 
-
-    }
-
-  );
-
- 
-
- 
-
-$("viewFullReport")
-
-  ?.addEventListener(
-
-    "click",
-
-    () => {
-
- 
-
-      alert(
-
-        "Aquí abriremos los reportes administrativos."
-
-      );
-
- 
-
-    }
-
-  );
-
- 
+});
 
  
 
