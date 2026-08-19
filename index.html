@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>AS CLICK Admin | Panel de Control</title>
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <div class="admin-app">
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+    <aside class="sidebar">
+
+      <div class="sidebar-logo">
+        <div class="logo-mark">AS CLICK</div>
+        <span>Admin</span>
+      </div>
+
+      <nav class="sidebar-nav">
+
+        <a href="#" class="nav-item active" data-section="inicio">
+          <span class="nav-icon">🏠</span>
+          <span>Inicio</span>
+        </a>
+
+        <a href="#" class="nav-item" data-section="servicios">
+          <span class="nav-icon">🚗</span>
+          <span>Servicios</span>
+          <span class="nav-arrow">⌄</span>
+        </a>
+
+        <a href="#" class="nav-item" data-section="proveedores">
+          <span class="nav-icon">🚚</span>
+          <span>Proveedores</span>
+          <span class="nav-arrow">⌄</span>
+        </a>
+
+        <a href="#" class="nav-item" data-section="clientes">
+          <span class="nav-icon">👥</span>
+          <span>Clientes</span>
+          <span class="nav-arrow">⌄</span>
+        </a>
+
+        <a href="#" class="nav-item" data-section="membresias">
+          <span class="nav-icon">💳</span>
+          <span>Membresías</span>
+          <span class="nav-arrow">⌄</span>
+        </a>
+
+        <a href="#" class="nav-item" data-section="emergencias">
+          <span class="nav-icon">🛡️</span>
+          <span>Emergencias</span>
+          <span class="nav-arrow">⌄</span>
+        </a>
+
+        <a href="#" class="nav-item" data-section="pagos">
+          <span class="nav-icon">💲</span>
+          <span>Pagos / Ganancias</span>
+          <span class="nav-arrow">⌄</span>
+        </a>
+
+        <a href="#" class="nav-item" data-section="reportes">
+          <span class="nav-icon">📊</span>
+          <span>Reportes</span>
+          <span class="nav-arrow">⌄</span>
+        </a>
+
+        <a href="#" class="nav-item" data-section="configuracion">
+          <span class="nav-icon">⚙️</span>
+          <span>Configuración</span>
+          <span class="nav-arrow">⌄</span>
+        </a>
+
+      </nav>
+
+      <div class="sidebar-footer">
+        <strong>AS CLICK</strong>
+        <span>México</span>
+        <small>Tu camino, siempre seguro.</small>
+      </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+         CONTENIDO PRINCIPAL
+    ====================================================== -->
+    <div class="main-area">
+
+      <!-- TOPBAR -->
+      <header class="topbar">
+
+        <div class="topbar-left">
+          <button id="menuButton" class="menu-button">☰</button>
+          <span>🏠</span>
+          <strong>Panel de Control</strong>
+        </div>
+
+        <div class="topbar-right">
+
+          <div class="online-status">
+            <span class="online-dot"></span>
+            En línea
+          </div>
+
+          <button class="notification-button">
+            🔔
+            <span class="notification-count">0</span>
+          </button>
+
+          <div class="admin-profile">
+            <div class="admin-avatar">👤</div>
+
+            <div>
+              <strong>Administrador</strong>
+              <small>AS CLICK México</small>
+            </div>
+
+            <span>⌄</span>
+          </div>
+
+        </div>
+
+      </header>
+
+
+      <!-- =====================================================
+           DASHBOARD
+      ====================================================== -->
+      <main class="dashboard">
+
+        <!-- BIENVENIDA -->
+        <section class="welcome-row">
+
+          <div>
+            <h1>👋 Bienvenido, Administrador</h1>
+            <p>
+              Control total de servicios, proveedores y clientes en tiempo real.
+            </p>
+          </div>
+
+          <div class="date-box">
+
+            <div>
+              📅
+              <span id="currentDate">Cargando fecha...</span>
+            </div>
+
+            <div>
+              🕐
+              <span id="currentTime">--:--</span>
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             ESTADÍSTICAS
+        ====================================================== -->
+        <section class="stats-grid">
+
+          <article class="stat-card green-card">
+
+            <div class="stat-title">
+              🚗 Servicios solicitados
+            </div>
+
+            <strong class="stat-number" id="statSolicitados">0</strong>
+
+            <small>
+              <span class="positive">▲</span>
+              Total registrados
+            </small>
+
+          </article>
+
+
+          <article class="stat-card blue-card">
+
+            <div class="stat-title">
+              🚙 Servicios activos
+            </div>
+
+            <strong class="stat-number" id="statActivos">0</strong>
+
+            <small>
+              Servicios en curso
+            </small>
+
+          </article>
+
+
+          <article class="stat-card emerald-card">
+
+            <div class="stat-title">
+              ✅ Servicios finalizados
+            </div>
+
+            <strong class="stat-number" id="statFinalizados">0</strong>
+
+            <small>
+              <span class="positive">▲</span>
+              Servicios completados
+            </small>
+
+          </article>
+
+
+          <article class="stat-card red-card">
+
+            <div class="stat-title">
+              ❌ Servicios cancelados
+            </div>
+
+            <strong class="stat-number" id="statCancelados">0</strong>
+
+            <small>
+              Servicios cancelados
+            </small>
+
+          </article>
+
+
+          <article class="stat-card purple-card">
+
+            <div class="stat-title">
+              👥 Proveedores disponibles
+            </div>
+
+            <strong class="stat-number" id="statProveedoresDisponibles">0</strong>
+
+            <small>
+              Disponibles ahora
+            </small>
+
+          </article>
+
+
+          <article class="stat-card orange-card">
+
+            <div class="stat-title">
+              👥 Proveedores
+            </div>
+
+            <strong class="stat-number" id="statProveedores">0</strong>
+
+            <small>
+              Registrados
+            </small>
+
+          </article>
+
+
+          <article class="stat-card mint-card">
+
+            <div class="stat-title">
+              💰 Ingresos estimados
+            </div>
+
+            <strong class="stat-number" id="statIngresos">$0</strong>
+
+            <small>
+              Ingresos registrados
+            </small>
+
+          </article>
+
+
+          <article class="stat-card yellow-card">
+
+            <div class="stat-title">
+              ⭐ Calificación
+            </div>
+
+            <strong class="stat-number" id="statCalificacion">0.0</strong>
+
+            <small>
+              Calificación promedio
+            </small>
+
+          </article>
+
+        </section>
+
+
+        <!-- =====================================================
+             FILA PRINCIPAL
+        ====================================================== -->
+        <section class="main-grid">
+
+          <!-- SERVICIOS -->
+          <article class="panel services-panel">
+
+            <div class="panel-header">
+
+              <h2>
+                <span class="green-dot"></span>
+                Servicios en tiempo real
+                <span class="live-dot"></span>
+              </h2>
+
+            </div>
+
+            <div class="table-wrapper">
+
+              <table>
+
+                <thead>
+                  <tr>
+                    <th>Folio</th>
+                    <th>En vivo</th>
+                    <th>Cliente</th>
+                    <th>Tipo</th>
+                    <th>Proveedor</th>
+                    <th>Estado</th>
+                    <th>Tiempo</th>
+                  </tr>
+                </thead>
+
+                <tbody id="servicesTableBody">
+
+                  <tr class="empty-row">
+                    <td colspan="7">
+                      No hay servicios para mostrar.
+                    </td>
+                  </tr>
+
+                </tbody>
+
+              </table>
+
+            </div>
+
+            <div class="panel-footer">
+              <button id="viewAllServices">
+                Ver todos los servicios →
+              </button>
+            </div>
+
+          </article>
+
+
+          <!-- PROVEEDORES PENDIENTES -->
+          <article class="panel providers-panel">
+
+            <div class="panel-header">
+
+              <h2>
+                🛡️ Proveedores pendientes de autorización
+                <span class="badge red-badge" id="pendingProvidersCount">0</span>
+              </h2>
+
+            </div>
+
+            <div class="table-wrapper">
+
+              <table>
+
+                <thead>
+                  <tr>
+                    <th>Proveedor</th>
+                    <th>Servicio</th>
+                    <th>Unidad</th>
+                    <th>Acción</th>
+                  </tr>
+                </thead>
+
+                <tbody id="providersPendingBody">
+
+                  <tr class="empty-row">
+                    <td colspan="4">
+                      No hay proveedores pendientes.
+                    </td>
+                  </tr>
+
+                </tbody>
+
+              </table>
+
+            </div>
+
+            <div class="panel-footer">
+              <button id="viewAllProviders">
+                Ver todos los proveedores →
+              </button>
+            </div>
+
+          </article>
+
+        </section>
+
+
+        <!-- =====================================================
+             SEGUNDA FILA
+        ====================================================== -->
+        <section class="secondary-grid">
+
+          <!-- CLIENTES -->
+          <article class="panel small-panel">
+
+            <div class="panel-header">
+              <h2>👥 Clientes y membresías</h2>
+            </div>
+
+            <div class="summary-list">
+
+              <div class="summary-item">
+                <span>👤 Clientes registrados</span>
+
+                <div>
+                  <strong id="clientesRegistrados">0</strong>
+                </div>
+              </div>
+
+
+              <div class="summary-item">
+                <span>💼 Membresías activas</span>
+
+                <div>
+                  <strong id="membresiasActivas">0</strong>
+                </div>
+              </div>
+
+
+              <div class="summary-item">
+                <span>🛡️ Membresías próximas a vencer</span>
+
+                <div>
+                  <strong id="membresiasVencer">0</strong>
+                  <small class="warning-text">⚠ Atender</small>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="panel-footer">
+              <button id="manageClients">
+                Gestionar clientes →
+              </button>
+            </div>
+
+          </article>
+
+
+          <!-- EMERGENCIAS -->
+          <article class="panel small-panel">
+
+            <div class="panel-header">
+
+              <h2>
+                🚨 Emergencias en vivo
+                <span class="badge red-badge" id="emergencyCount">0</span>
+              </h2>
+
+            </div>
+
+            <div id="emergencyList" class="emergency-list">
+
+              <div class="empty-message">
+                No hay emergencias activas.
+              </div>
+
+            </div>
+
+            <div class="panel-footer">
+              <button id="viewEmergencies">
+                Ver emergencias →
+              </button>
+            </div>
+
+          </article>
+
+
+          <!-- MAPA -->
+          <article class="panel small-panel">
+
+            <div class="panel-header">
+              <h2>Ubicación de proveedores</h2>
+            </div>
+
+            <div class="map-container" id="providersMap">
+
+              <div class="fake-map">
+
+                <div class="map-road road-one"></div>
+                <div class="map-road road-two"></div>
+                <div class="map-road road-three"></div>
+
+                <span class="map-marker marker-one">📍</span>
+                <span class="map-marker marker-two">📍</span>
+                <span class="map-marker marker-three">📍</span>
+
+                <div class="map-provider-card">
+                  <strong>Proveedor</strong>
+                  <span>Disponible</span>
+                </div>
+
+              </div>
+
+            </div>
+
+            <div class="panel-footer">
+              <button id="viewFullMap" class="yellow-button">
+                Ver mapa completo →
+              </button>
+            </div>
+
+          </article>
+
+        </section>
+
+
+        <!-- =====================================================
+             ACTIVIDAD RECIENTE
+        ====================================================== -->
+        <section class="panel activity-panel">
+
+          <div class="panel-header">
+
+            <h2>
+              🕘 Actividad reciente
+            </h2>
+
+            <button id="viewFullReport" class="yellow-button">
+              Ver reporte completo →
+            </button>
+
+          </div>
+
+          <div class="table-wrapper">
+
+            <table>
+
+              <thead>
+                <tr>
+                  <th>Fecha / Hora</th>
+                  <th>Usuario</th>
+                  <th>Acción</th>
+                  <th>Detalle</th>
+                </tr>
+              </thead>
+
+              <tbody id="activityTableBody">
+
+                <tr class="empty-row">
+                  <td colspan="4">
+                    Todavía no hay actividad registrada.
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </section>
+
+
+      </main>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       MODAL AUTORIZAR PROVEEDOR
+  ====================================================== -->
+  <div class="modal-overlay" id="authorizeModal" hidden>
+
+    <div class="modal">
+
+      <button class="modal-close" data-close-modal>×</button>
+
+      <div class="modal-icon success-icon">
+        ✓
+      </div>
+
+      <h2>Autorizar proveedor</h2>
+
+      <p>
+        ¿Deseas autorizar a este proveedor para recibir servicios?
+      </p>
+
+      <div class="modal-provider-info" id="authorizeProviderInfo"></div>
+
+      <div class="modal-actions">
+
+        <button class="secondary-button" data-close-modal>
+          Cancelar
+        </button>
+
+        <button class="success-button" id="confirmAuthorize">
+          Autorizar
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       MODAL RECHAZAR PROVEEDOR
+  ====================================================== -->
+  <div class="modal-overlay" id="rejectModal" hidden>
+
+    <div class="modal">
+
+      <button class="modal-close" data-close-modal>×</button>
+
+      <div class="modal-icon danger-icon">
+        !
+      </div>
+
+      <h2>Rechazar proveedor</h2>
+
+      <p>
+        El proveedor no podrá recibir servicios mientras permanezca rechazado.
+      </p>
+
+      <label class="form-field">
+
+        <span>Motivo del rechazo</span>
+
+        <textarea
+          id="rejectReason"
+          rows="4"
+          placeholder="Escribe el motivo..."
+        ></textarea>
+
+      </label>
+
+      <div class="modal-actions">
+
+        <button class="secondary-button" data-close-modal>
+          Cancelar
+        </button>
+
+        <button class="danger-button" id="confirmReject">
+          Rechazar
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       MODAL DETALLE SERVICIO
+  ====================================================== -->
+  <div class="modal-overlay" id="serviceModal" hidden>
+
+    <div class="modal large-modal">
+
+      <button class="modal-close" data-close-modal>×</button>
+
+      <h2>Detalle del servicio</h2>
+
+      <div id="serviceDetailContent">
+        Cargando información...
+      </div>
+
+      <div class="modal-actions">
+
+        <button class="secondary-button" data-close-modal>
+          Cerrar
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       FIREBASE + APP
+  ====================================================== -->
+
+  <script type="module" src="app.js"></script>
+
+</body>
+</html>
