@@ -5620,7 +5620,7 @@ $("manualServiceForm")?.addEventListener("submit", async event => {
 
     servicio: {
 
-      tipo,
+      tipo: type,
 
       nombre: formatServiceType(type)
 
