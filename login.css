@@ -1,0 +1,1182 @@
+/* =========================================================
+   AS CLICK ADMIN
+   login.css
+   ========================================================= */
+
+:root{
+  --navy:#071a3d;
+  --navy-dark:#031027;
+  --navy-light:#0c2b60;
+  --yellow:#ffd426;
+  --yellow-dark:#e9bd00;
+  --blue:#2478ff;
+  --green:#19bd7b;
+  --red:#ef4444;
+
+  --white:#ffffff;
+  --bg:#f4f7fb;
+  --text:#172033;
+  --muted:#667085;
+  --border:#dfe5ee;
+
+  --radius:20px;
+  --shadow:0 25px 70px rgba(2,12,30,.18);
+}
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+html{
+  min-height:100%;
+}
+
+body{
+  min-height:100vh;
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
+button,
+input{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+button:disabled{
+  cursor:not-allowed;
+  opacity:.7;
+}
+
+[hidden]{
+  display:none !important;
+}
+
+
+/* =========================================================
+   PÁGINA LOGIN
+   ========================================================= */
+
+.login-page{
+  position:relative;
+  min-height:100vh;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  padding:35px;
+
+  overflow:hidden;
+
+  background:
+    radial-gradient(
+      circle at 15% 20%,
+      rgba(36,120,255,.10),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 85% 80%,
+      rgba(255,212,38,.12),
+      transparent 30%
+    ),
+    #f4f7fb;
+}
+
+
+/* =========================================================
+   DECORACIÓN FONDO
+   ========================================================= */
+
+.background-decoration{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  overflow:hidden;
+}
+
+.background-circle{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(2px);
+}
+
+.circle-one{
+  width:380px;
+  height:380px;
+
+  left:-170px;
+  top:-140px;
+
+  background:rgba(7,26,61,.05);
+}
+
+.circle-two{
+  width:280px;
+  height:280px;
+
+  right:-90px;
+  bottom:-90px;
+
+  background:rgba(255,212,38,.14);
+}
+
+.circle-three{
+  width:160px;
+  height:160px;
+
+  right:15%;
+  top:8%;
+
+  border:28px solid rgba(36,120,255,.04);
+}
+
+
+/* =========================================================
+   CONTENEDOR PRINCIPAL
+   ========================================================= */
+
+.login-container{
+  position:relative;
+  z-index:5;
+
+  width:100%;
+  max-width:1050px;
+  min-height:620px;
+
+  display:grid;
+  grid-template-columns:1fr 1fr;
+
+  overflow:hidden;
+
+  border-radius:24px;
+
+  background:#fff;
+
+  box-shadow:var(--shadow);
+}
+
+
+/* =========================================================
+   PANEL IZQUIERDO
+   ========================================================= */
+
+.login-brand-panel{
+  position:relative;
+
+  display:flex;
+  align-items:center;
+
+  padding:55px 52px;
+
+  overflow:hidden;
+
+  background:
+    linear-gradient(
+      145deg,
+      #082453 0%,
+      #071a3d 45%,
+      #031027 100%
+    );
+
+  color:#fff;
+}
+
+.login-brand-panel::before{
+  content:"";
+
+  position:absolute;
+
+  width:380px;
+  height:380px;
+
+  right:-210px;
+  top:-180px;
+
+  border:55px solid rgba(255,255,255,.025);
+  border-radius:50%;
+}
+
+.login-brand-panel::after{
+  content:"";
+
+  position:absolute;
+
+  width:270px;
+  height:270px;
+
+  left:-170px;
+  bottom:-150px;
+
+  border:45px solid rgba(255,212,38,.04);
+  border-radius:50%;
+}
+
+.brand-content{
+  position:relative;
+  z-index:2;
+
+  width:100%;
+}
+
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+
+.brand-logo{
+  display:inline-flex;
+  flex-direction:column;
+
+  margin-bottom:28px;
+}
+
+.brand-logo-main{
+  position:relative;
+
+  color:var(--yellow);
+
+  font-size:38px;
+  font-weight:900;
+  font-style:italic;
+
+  letter-spacing:-2px;
+}
+
+.brand-logo-main::before{
+  content:"";
+
+  position:absolute;
+
+  left:4px;
+  right:4px;
+  top:-10px;
+
+  height:12px;
+
+  border-top:4px solid var(--yellow);
+  border-radius:50%;
+}
+
+.brand-logo-subtitle{
+  margin-top:1px;
+
+  color:#fff;
+
+  font-size:10px;
+  font-weight:800;
+
+  letter-spacing:.35em;
+
+  text-align:center;
+}
+
+
+/* =========================================================
+   BADGE ADMIN
+   ========================================================= */
+
+.admin-badge{
+  display:inline-flex;
+
+  padding:7px 12px;
+
+  margin-bottom:18px;
+
+  border:1px solid rgba(255,212,38,.28);
+  border-radius:999px;
+
+  background:rgba(255,212,38,.08);
+
+  color:var(--yellow);
+
+  font-size:9px;
+  font-weight:800;
+
+  letter-spacing:.12em;
+}
+
+
+/* =========================================================
+   TEXTO BRAND
+   ========================================================= */
+
+.login-brand-panel h1{
+  max-width:400px;
+
+  font-size:37px;
+  line-height:1.08;
+
+  letter-spacing:-1px;
+}
+
+.login-brand-panel h1 span{
+  display:block;
+
+  margin-top:5px;
+
+  color:var(--yellow);
+}
+
+.brand-description{
+  max-width:390px;
+
+  margin-top:18px;
+
+  color:#c5d2e7;
+
+  font-size:13px;
+  line-height:1.65;
+}
+
+
+/* =========================================================
+   FEATURES
+   ========================================================= */
+
+.brand-features{
+  display:flex;
+  flex-direction:column;
+
+  gap:17px;
+
+  margin-top:35px;
+}
+
+.brand-feature{
+  display:flex;
+  align-items:flex-start;
+
+  gap:12px;
+}
+
+.feature-icon{
+  flex-shrink:0;
+
+  width:28px;
+  height:28px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border-radius:50%;
+
+  background:rgba(255,212,38,.12);
+
+  color:var(--yellow);
+
+  font-size:12px;
+  font-weight:900;
+
+  border:1px solid rgba(255,212,38,.25);
+}
+
+.brand-feature > div:last-child{
+  display:flex;
+  flex-direction:column;
+}
+
+.brand-feature strong{
+  color:#fff;
+
+  font-size:12px;
+}
+
+.brand-feature span{
+  max-width:330px;
+
+  margin-top:4px;
+
+  color:#aebed6;
+
+  font-size:10px;
+  line-height:1.45;
+}
+
+
+/* =========================================================
+   BRAND FOOTER
+   ========================================================= */
+
+.brand-footer{
+  display:flex;
+  flex-direction:column;
+
+  margin-top:38px;
+
+  padding-top:20px;
+
+  border-top:1px solid rgba(255,255,255,.08);
+}
+
+.brand-footer strong{
+  color:var(--yellow);
+
+  font-size:14px;
+  font-style:italic;
+}
+
+.brand-footer span{
+  margin-top:4px;
+
+  color:#8fa3c2;
+
+  font-size:9px;
+}
+
+
+/* =========================================================
+   PANEL DERECHO
+   ========================================================= */
+
+.login-form-panel{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  padding:50px 55px;
+
+  background:#fff;
+}
+
+.login-card{
+  width:100%;
+  max-width:385px;
+}
+
+
+/* =========================================================
+   HEADER LOGIN
+   ========================================================= */
+
+.login-header{
+  margin-bottom:28px;
+}
+
+.mobile-logo{
+  display:none;
+}
+
+.login-icon{
+  width:48px;
+  height:48px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  margin-bottom:16px;
+
+  border-radius:13px;
+
+  background:#eef4ff;
+
+  color:var(--navy);
+
+  font-size:21px;
+}
+
+.login-eyebrow{
+  display:block;
+
+  margin-bottom:8px;
+
+  color:#2478ff;
+
+  font-size:9px;
+  font-weight:900;
+
+  letter-spacing:.12em;
+}
+
+.login-header h2{
+  color:#172033;
+
+  font-size:26px;
+  line-height:1.15;
+
+  letter-spacing:-.5px;
+}
+
+.login-header p{
+  margin-top:9px;
+
+  color:var(--muted);
+
+  font-size:11px;
+  line-height:1.5;
+}
+
+
+/* =========================================================
+   MENSAJES
+   ========================================================= */
+
+.login-message{
+  margin-bottom:18px;
+
+  padding:11px 13px;
+
+  border-radius:8px;
+
+  font-size:10px;
+  font-weight:700;
+
+  line-height:1.45;
+}
+
+.login-message.error{
+  border:1px solid #fecaca;
+
+  background:#fff1f2;
+
+  color:#b42318;
+}
+
+.login-message.success{
+  border:1px solid #bbf7d0;
+
+  background:#ecfdf3;
+
+  color:#087443;
+}
+
+.login-message.info{
+  border:1px solid #bfdbfe;
+
+  background:#eff6ff;
+
+  color:#175cd3;
+}
+
+
+/* =========================================================
+   FORMULARIO
+   ========================================================= */
+
+.form-group{
+  display:block;
+
+  margin-bottom:17px;
+}
+
+.form-label{
+  display:block;
+
+  margin-bottom:7px;
+
+  color:#344054;
+
+  font-size:10px;
+  font-weight:800;
+}
+
+.input-wrapper{
+  position:relative;
+}
+
+.input-wrapper input{
+  width:100%;
+  height:47px;
+
+  padding:0 44px 0 42px;
+
+  border:1px solid #d5dce7;
+  border-radius:9px;
+
+  outline:none;
+
+  background:#fff;
+
+  color:#172033;
+
+  font-size:12px;
+
+  transition:
+    border-color .2s ease,
+    box-shadow .2s ease,
+    background .2s ease;
+}
+
+.input-wrapper input::placeholder{
+  color:#a3adbd;
+}
+
+.input-wrapper input:hover{
+  border-color:#b9c5d6;
+}
+
+.input-wrapper input:focus{
+  border-color:#2478ff;
+
+  box-shadow:
+    0 0 0 3px rgba(36,120,255,.10);
+}
+
+.input-icon{
+  position:absolute;
+
+  z-index:2;
+
+  left:14px;
+  top:50%;
+
+  transform:translateY(-50%);
+
+  color:#7b8798;
+
+  font-size:14px;
+
+  pointer-events:none;
+}
+
+
+/* =========================================================
+   MOSTRAR CONTRASEÑA
+   ========================================================= */
+
+.password-toggle{
+  position:absolute;
+
+  z-index:3;
+
+  right:10px;
+  top:50%;
+
+  width:30px;
+  height:30px;
+
+  transform:translateY(-50%);
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  border:none;
+  border-radius:6px;
+
+  background:transparent;
+
+  color:#667085;
+
+  font-size:14px;
+
+  transition:background .2s ease;
+}
+
+.password-toggle:hover{
+  background:#f2f4f7;
+}
+
+
+/* =========================================================
+   OPCIONES
+   ========================================================= */
+
+.form-options{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  gap:10px;
+
+  margin-top:2px;
+  margin-bottom:20px;
+}
+
+.remember-option{
+  display:flex;
+  align-items:center;
+
+  gap:7px;
+
+  color:#667085;
+
+  font-size:10px;
+
+  cursor:pointer;
+}
+
+.remember-option input{
+  width:14px;
+  height:14px;
+
+  accent-color:#2478ff;
+}
+
+
+/* =========================================================
+   BOTÓN LOGIN
+   ========================================================= */
+
+.login-button{
+  width:100%;
+  min-height:48px;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  gap:9px;
+
+  border:none;
+  border-radius:9px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #082454 0%,
+      #071a3d 100%
+    );
+
+  color:#fff;
+
+  font-size:11px;
+  font-weight:800;
+
+  box-shadow:
+    0 8px 18px rgba(7,26,61,.18);
+
+  transition:
+    transform .2s ease,
+    box-shadow .2s ease,
+    background .2s ease;
+}
+
+.login-button:hover{
+  transform:translateY(-1px);
+
+  box-shadow:
+    0 11px 24px rgba(7,26,61,.23);
+}
+
+.login-button:active{
+  transform:translateY(0);
+}
+
+.login-button-icon{
+  color:var(--yellow);
+
+  font-size:16px;
+  font-weight:900;
+}
+
+
+/* =========================================================
+   SEGURIDAD
+   ========================================================= */
+
+.security-box{
+  display:flex;
+  align-items:flex-start;
+
+  gap:10px;
+
+  margin-top:24px;
+
+  padding:12px;
+
+  border:1px solid #e6ebf2;
+  border-radius:9px;
+
+  background:#f8fafc;
+}
+
+.security-icon{
+  flex-shrink:0;
+
+  width:29px;
+  height:29px;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  border-radius:7px;
+
+  background:#fff4c2;
+
+  font-size:14px;
+}
+
+.security-box > div:last-child{
+  display:flex;
+  flex-direction:column;
+}
+
+.security-box strong{
+  color:#344054;
+
+  font-size:9px;
+}
+
+.security-box p{
+  margin-top:3px;
+
+  color:#7b8798;
+
+  font-size:8px;
+  line-height:1.45;
+}
+
+
+/* =========================================================
+   ESTADO DEL SISTEMA
+   ========================================================= */
+
+.system-status{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  gap:6px;
+
+  margin-top:19px;
+
+  color:#667085;
+
+  font-size:8px;
+}
+
+.system-status small{
+  padding-left:6px;
+
+  border-left:1px solid #d8dee8;
+
+  color:#98a2b3;
+
+  font-size:8px;
+}
+
+.status-dot{
+  width:7px;
+  height:7px;
+
+  border-radius:50%;
+
+  background:var(--green);
+
+  box-shadow:
+    0 0 0 3px rgba(25,189,123,.10);
+}
+
+
+/* =========================================================
+   LOADER DE SESIÓN
+   ========================================================= */
+
+.session-loader{
+  position:fixed;
+
+  inset:0;
+
+  z-index:9999;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  padding:20px;
+
+  background:
+    rgba(3,16,39,.94);
+
+  backdrop-filter:blur(4px);
+}
+
+.loader-card{
+  width:100%;
+  max-width:310px;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+
+  padding:35px 25px;
+
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:18px;
+
+  background:#071a3d;
+
+  color:#fff;
+
+  box-shadow:
+    0 25px 70px rgba(0,0,0,.35);
+
+  text-align:center;
+}
+
+.loader-logo{
+  position:relative;
+
+  margin-bottom:25px;
+
+  color:var(--yellow);
+
+  font-size:25px;
+  font-weight:900;
+  font-style:italic;
+}
+
+.loader-logo::before{
+  content:"";
+
+  position:absolute;
+
+  left:3px;
+  right:3px;
+  top:-8px;
+
+  border-top:3px solid var(--yellow);
+  border-radius:50%;
+}
+
+.loader-spinner{
+  width:35px;
+  height:35px;
+
+  margin-bottom:18px;
+
+  border:4px solid rgba(255,255,255,.15);
+  border-top-color:var(--yellow);
+  border-radius:50%;
+
+  animation:spin .75s linear infinite;
+}
+
+.loader-card strong{
+  font-size:13px;
+}
+
+.loader-card span{
+  margin-top:6px;
+
+  color:#aebed6;
+
+  font-size:9px;
+}
+
+@keyframes spin{
+  to{
+    transform:rotate(360deg);
+  }
+}
+
+
+/* =========================================================
+   ERROR DE INPUT
+   ========================================================= */
+
+.input-wrapper.input-error input{
+  border-color:#ef4444;
+
+  background:#fffafa;
+
+  box-shadow:
+    0 0 0 3px rgba(239,68,68,.08);
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media(max-width:900px){
+
+  .login-page{
+    padding:25px;
+  }
+
+  .login-container{
+    max-width:650px;
+
+    grid-template-columns:1fr;
+  }
+
+  .login-brand-panel{
+    display:none;
+  }
+
+  .login-form-panel{
+    min-height:620px;
+
+    padding:50px;
+  }
+
+  .mobile-logo{
+    display:flex;
+    align-items:center;
+
+    gap:8px;
+
+    margin-bottom:28px;
+  }
+
+  .mobile-logo strong{
+    position:relative;
+
+    color:var(--navy);
+
+    font-size:23px;
+    font-weight:900;
+    font-style:italic;
+  }
+
+  .mobile-logo strong::before{
+    content:"";
+
+    position:absolute;
+
+    left:2px;
+    right:2px;
+    top:-7px;
+
+    border-top:3px solid var(--yellow);
+    border-radius:50%;
+  }
+
+  .mobile-logo span{
+    padding:4px 7px;
+
+    border-radius:5px;
+
+    background:var(--navy);
+
+    color:var(--yellow);
+
+    font-size:8px;
+    font-weight:900;
+  }
+
+}
+
+
+/* =========================================================
+   MÓVIL
+   ========================================================= */
+
+@media(max-width:600px){
+
+  body{
+    background:#fff;
+  }
+
+  .login-page{
+    display:block;
+
+    min-height:100vh;
+
+    padding:0;
+
+    background:#fff;
+  }
+
+  .background-decoration{
+    display:none;
+  }
+
+  .login-container{
+    min-height:100vh;
+
+    border-radius:0;
+
+    box-shadow:none;
+  }
+
+  .login-form-panel{
+    min-height:100vh;
+
+    align-items:flex-start;
+
+    padding:45px 24px;
+  }
+
+  .login-card{
+    max-width:none;
+  }
+
+  .login-header h2{
+    font-size:25px;
+  }
+
+}
+
+
+/* =========================================================
+   TELÉFONO PEQUEÑO
+   ========================================================= */
+
+@media(max-width:390px){
+
+  .login-form-panel{
+    padding:
+      35px
+      18px;
+  }
+
+  .login-header{
+    margin-bottom:23px;
+  }
+
+  .login-header h2{
+    font-size:22px;
+  }
+
+  .input-wrapper input{
+    height:45px;
+  }
+
+  .login-button{
+    min-height:46px;
+  }
+
+}
+
+
+/* =========================================================
+   ALTURA REDUCIDA
+   ========================================================= */
+
+@media(max-height:700px) and (min-width:901px){
+
+  .login-page{
+    padding:20px;
+  }
+
+  .login-container{
+    min-height:570px;
+  }
+
+  .login-brand-panel{
+    padding-top:35px;
+    padding-bottom:35px;
+  }
+
+  .brand-features{
+    margin-top:25px;
+    gap:12px;
+  }
+
+  .brand-footer{
+    margin-top:25px;
+  }
+
+  .login-form-panel{
+    padding-top:30px;
+    padding-bottom:30px;
+  }
+
+}
