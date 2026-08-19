@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="theme-color"
+    content="#071a3d"
+  >
+
+  <title>AS CLICK Admin | Iniciar sesión</title>
+
+  <link
+    rel="stylesheet"
+    href="login.css"
+  >
+</head>
+
+<body>
+
+  <!-- =====================================================
+       AS CLICK ADMIN - LOGIN
+  ====================================================== -->
+
+  <main class="login-page">
+
+    <!-- DECORACIÓN DE FONDO -->
+    <div class="background-decoration" aria-hidden="true">
+
+      <div class="background-circle circle-one"></div>
+
+      <div class="background-circle circle-two"></div>
+
+      <div class="background-circle circle-three"></div>
+
+    </div>
+
+
+    <!-- =====================================================
+         CONTENEDOR PRINCIPAL
+    ====================================================== -->
+
+    <section class="login-container">
+
+      <!-- ===================================================
+           PANEL IZQUIERDO
+      ==================================================== -->
+
+      <div class="login-brand-panel">
+
+        <div class="brand-content">
+
+          <div class="brand-logo">
+
+            <div class="brand-logo-main">
+              AS CLICK
+            </div>
+
+            <div class="brand-logo-subtitle">
+              MÉXICO
+            </div>
+
+          </div>
+
+
+          <div class="admin-badge">
+            PANEL ADMINISTRATIVO
+          </div>
+
+
+          <h1>
+            Control total de
+            <span>AS CLICK</span>
+          </h1>
+
+
+          <p class="brand-description">
+            Administra servicios, proveedores, clientes,
+            membresías y emergencias desde un solo lugar.
+          </p>
+
+
+          <div class="brand-features">
+
+            <div class="brand-feature">
+
+              <div class="feature-icon">
+                ✓
+              </div>
+
+              <div>
+                <strong>Servicios en tiempo real</strong>
+
+                <span>
+                  Supervisa cada solicitud desde su creación
+                  hasta su finalización.
+                </span>
+              </div>
+
+            </div>
+
+
+            <div class="brand-feature">
+
+              <div class="feature-icon">
+                ✓
+              </div>
+
+              <div>
+                <strong>Control de proveedores</strong>
+
+                <span>
+                  Autoriza, revisa y administra proveedores
+                  desde el panel.
+                </span>
+              </div>
+
+            </div>
+
+
+            <div class="brand-feature">
+
+              <div class="feature-icon">
+                ✓
+              </div>
+
+              <div>
+                <strong>Información centralizada</strong>
+
+                <span>
+                  Clientes, membresías, servicios y emergencias
+                  en una sola plataforma.
+                </span>
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="brand-footer">
+
+            <strong>AS CLICK</strong>
+
+            <span>
+              Tu camino, siempre seguro.
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ===================================================
+           PANEL LOGIN
+      ==================================================== -->
+
+      <div class="login-form-panel">
+
+        <div class="login-card">
+
+          <!-- ENCABEZADO -->
+
+          <div class="login-header">
+
+            <div class="mobile-logo">
+
+              <strong>
+                AS CLICK
+              </strong>
+
+              <span>
+                ADMIN
+              </span>
+
+            </div>
+
+
+            <div class="login-icon">
+              🔐
+            </div>
+
+
+            <span class="login-eyebrow">
+              ACCESO RESTRINGIDO
+            </span>
+
+
+            <h2>
+              Panel de Administrador
+            </h2>
+
+
+            <p>
+              Ingresa con tu cuenta autorizada de AS CLICK.
+            </p>
+
+          </div>
+
+
+          <!-- =================================================
+               MENSAJES
+          ================================================== -->
+
+          <div
+            id="loginMessage"
+            class="login-message"
+            hidden
+          ></div>
+
+
+          <!-- =================================================
+               FORMULARIO
+          ================================================== -->
+
+          <form
+            id="loginForm"
+            autocomplete="on"
+          >
+
+            <!-- CORREO -->
+
+            <label class="form-group">
+
+              <span class="form-label">
+                Correo electrónico
+              </span>
+
+
+              <div class="input-wrapper">
+
+                <span class="input-icon">
+                  ✉
+                </span>
+
+
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="administrador@asclick.mx"
+                  autocomplete="username"
+                  required
+                >
+
+              </div>
+
+            </label>
+
+
+            <!-- CONTRASEÑA -->
+
+            <label class="form-group">
+
+              <span class="form-label">
+                Contraseña
+              </span>
+
+
+              <div class="input-wrapper">
+
+                <span class="input-icon">
+                  🔒
+                </span>
+
+
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  placeholder="Ingresa tu contraseña"
+                  autocomplete="current-password"
+                  required
+                >
+
+
+                <button
+                  id="togglePassword"
+                  class="password-toggle"
+                  type="button"
+                  aria-label="Mostrar contraseña"
+                  title="Mostrar contraseña"
+                >
+                  👁
+                </button>
+
+              </div>
+
+            </label>
+
+
+            <!-- OPCIONES -->
+
+            <div class="form-options">
+
+              <label class="remember-option">
+
+                <input
+                  id="rememberSession"
+                  type="checkbox"
+                >
+
+                <span>
+                  Mantener sesión iniciada
+                </span>
+
+              </label>
+
+            </div>
+
+
+            <!-- BOTÓN LOGIN -->
+
+            <button
+              id="loginButton"
+              class="login-button"
+              type="submit"
+            >
+
+              <span
+                id="loginButtonIcon"
+                class="login-button-icon"
+              >
+                →
+              </span>
+
+              <span id="loginButtonText">
+                Ingresar al panel
+              </span>
+
+            </button>
+
+          </form>
+
+
+          <!-- =================================================
+               ESTADO DE SEGURIDAD
+          ================================================== -->
+
+          <div class="security-box">
+
+            <div class="security-icon">
+              🛡️
+            </div>
+
+
+            <div>
+
+              <strong>
+                Acceso exclusivo
+              </strong>
+
+              <p>
+                Solo las cuentas con autorización de
+                administrador pueden ingresar a este panel.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <!-- =================================================
+               FIREBASE STATUS
+          ================================================== -->
+
+          <div class="system-status">
+
+            <span class="status-dot"></span>
+
+            <span>
+              AS CLICK Admin
+            </span>
+
+            <small>
+              Sistema administrativo
+            </small>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- =====================================================
+       PANTALLA VALIDANDO SESIÓN
+  ====================================================== -->
+
+  <div
+    id="sessionLoader"
+    class="session-loader"
+    hidden
+  >
+
+    <div class="loader-card">
+
+      <div class="loader-logo">
+        AS CLICK
+      </div>
+
+      <div class="loader-spinner"></div>
+
+      <strong>
+        Verificando acceso
+      </strong>
+
+      <span>
+        Validando cuenta de administrador...
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       JAVASCRIPT
+  ====================================================== -->
+
+  <script
+    type="module"
+    src="login.js"
+  ></script>
+
+</body>
+</html>
