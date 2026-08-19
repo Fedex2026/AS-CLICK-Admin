@@ -10748,6 +10748,90 @@ function getAssignmentMode(){
 
 }
 
+
+function parseManualCoordinates(value){
+
+  const text = String(value || "").trim();
+
+  if(!text) return null;
+
+  const patterns = [
+    /@(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/,
+    /[?&](?:q|query|ll)=(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/,
+    /^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/
+  ];
+
+  for(const pattern of patterns){
+    const match = text.match(pattern);
+    if(match){
+      const latitud = Number(match[1]);
+      const longitud = Number(match[2]);
+      if(Number.isFinite(latitud) && Number.isFinite(longitud)){
+        return { latitud, longitud };
+      }
+    }
+  }
+
+  return null;
+}
+
+function setManualCoordinates(latitud, longitud){
+
+  if($("manualLatitude")) $("manualLatitude").value = Number(latitud).toFixed(6);
+  if($("manualLongitude")) $("manualLongitude").value = Number(longitud).toFixed(6);
+
+}
+
+function syncManualCoordinatesFromOrigin(){
+
+  const coordinates = parseManualCoordinates($("manualOrigin")?.value || "");
+  if(coordinates){
+    setManualCoordinates(coordinates.latitud, coordinates.longitud);
+  }
+
+}
+
+$("manualUseCurrentLocation")?.addEventListener("click", () => {
+
+  if(!navigator.geolocation){
+    manualServiceMessage("Este navegador no permite obtener la ubicación actual.");
+    return;
+  }
+
+  const button = $("manualUseCurrentLocation");
+  const originalText = button?.textContent || "Usar ubicación actual";
+  if(button){
+    button.disabled = true;
+    button.textContent = "Obteniendo ubicación...";
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    position => {
+      const latitud = position.coords.latitude;
+      const longitud = position.coords.longitude;
+      setManualCoordinates(latitud, longitud);
+      if($("manualOrigin") && !$("manualOrigin").value.trim()){
+        $("manualOrigin").value = `${latitud.toFixed(6)}, ${longitud.toFixed(6)}`;
+      }
+      updateManualSummary();
+      if(button){
+        button.disabled = false;
+        button.textContent = originalText;
+      }
+    },
+    error => {
+      console.error("No fue posible obtener ubicación manual:", error);
+      manualServiceMessage("No fue posible obtener la ubicación. Pega un enlace de Google Maps con coordenadas o captura latitud y longitud.");
+      if(button){
+        button.disabled = false;
+        button.textContent = originalText;
+      }
+    },
+    { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 }
+  );
+
+});
+
  
 
  
@@ -10980,6 +11064,8 @@ document.querySelectorAll('input[name="manualAssignmentMode"]').forEach(radio =>
 
 });
 
+$("manualOrigin")?.addEventListener("input", syncManualCoordinatesFromOrigin);
+
  
 
  
@@ -11108,6 +11194,12 @@ $("manualServiceForm")?.addEventListener("submit", async event => {
 
   const providerId = assignmentMode === "manual" ? ($("manualProviderSelect")?.value || "") : "";
 
+  syncManualCoordinatesFromOrigin();
+
+  const latitude = Number($("manualLatitude")?.value);
+  const longitude = Number($("manualLongitude")?.value);
+  const hasCoordinates = Number.isFinite(latitude) && Number.isFinite(longitude);
+
  
 
  
@@ -11165,6 +11257,14 @@ $("manualServiceForm")?.addEventListener("submit", async event => {
     return;
 
  
+
+  }
+
+  if(assignmentMode === "automatico" && !hasCoordinates){
+
+    manualServiceMessage("Para asignación automática agrega coordenadas del origen. Puedes usar ubicación actual, pegar un enlace de Google Maps con coordenadas o capturar latitud y longitud.");
+
+    return;
 
   }
 
@@ -11280,11 +11380,31 @@ $("manualServiceForm")?.addEventListener("submit", async event => {
 
     origen: {
 
- 
+      texto: origin,
 
-      texto: origin
+      latitud: hasCoordinates ? latitude : null,
 
- 
+      longitud: hasCoordinates ? longitude : null,
+
+      latitude: hasCoordinates ? latitude : null,
+
+      longitude: hasCoordinates ? longitude : null
+
+    },
+
+    ubicacion: {
+
+      texto: origin,
+
+      latitud: hasCoordinates ? latitude : null,
+
+      longitud: hasCoordinates ? longitude : null,
+
+      latitude: hasCoordinates ? latitude : null,
+
+      longitude: hasCoordinates ? longitude : null,
+
+      enlaceGoogleMaps: hasCoordinates ? `https://www.google.com/maps?q=${latitude},${longitude}` : ""
 
     },
 
