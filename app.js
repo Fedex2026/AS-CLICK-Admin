@@ -1,7 +1,3 @@
-import { auth, db } from "./firebase-config.js";
-
- 
-
 import {
 
   collection,
@@ -31,6 +27,10 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
 
  
+
+ 
+
+/* VERSION ADMIN SERVICIOS 2026-08-19 FIX-TIPO-WHATSAPP */
 
  
 
@@ -5528,6 +5528,98 @@ function manualServiceMessage(message, type="error"){
 
  
 
+ 
+
+function normalizeWhatsAppPhone(value){
+
+  const digits = String(value || "").replace(/\D/g, "");
+
+  if(!digits) return "";
+
+  if(digits.length === 10) return `52${digits}`;
+
+  return digits;
+
+}
+
+ 
+
+function buildManualServiceWhatsAppMessage(payload, provider){
+
+  const providerName = provider?.nombre || provider?.nombreCompleto || "Proveedor AS CLICK";
+
+  const clientName = payload.cliente?.nombre || "Cliente";
+
+  const clientPhone = payload.cliente?.telefono || "";
+
+  const origin = payload.origen?.texto || "";
+
+  const destination = payload.destino?.texto || "";
+
+  const serviceName = payload.servicio?.nombre || formatServiceType(payload.tipoServicio);
+
+  const vehicle = [
+
+    payload.vehiculo?.marca,
+
+    payload.vehiculo?.subMarca,
+
+    payload.vehiculo?.color,
+
+    payload.vehiculo?.placas
+
+  ].filter(Boolean).join(" · ");
+
+ 
+
+  return [
+
+    "🚨 AS CLICK · NUEVO SERVICIO",
+
+    `Folio: ${payload.folioOficial || payload.folio}`,
+
+    `Proveedor: ${providerName}`,
+
+    `Servicio: ${serviceName}`,
+
+    `Cliente: ${clientName}`,
+
+    clientPhone ? `Teléfono cliente: ${clientPhone}` : "",
+
+    `Origen: ${origin}`,
+
+    destination ? `Destino: ${destination}` : "",
+
+    vehicle ? `Vehículo: ${vehicle}` : "",
+
+    payload.observaciones ? `Observaciones: ${payload.observaciones}` : "",
+
+    "Ingresa a AS CLICK Proveedores para aceptar y dar seguimiento."
+
+  ].filter(Boolean).join("\n");
+
+}
+
+ 
+
+function openWhatsAppForSelectedProvider(payload, provider){
+
+  const phone = normalizeWhatsAppPhone(provider?.telefono || provider?.phone || provider?.celular || "");
+
+  if(!phone) return false;
+
+  const text = buildManualServiceWhatsAppMessage(payload, provider);
+
+  const url = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+
+  window.open(url, "_blank", "noopener,noreferrer");
+
+  return true;
+
+}
+
+ 
+
 $("manualServiceForm")?.addEventListener("submit", async event => {
 
   event.preventDefault();
@@ -5546,9 +5638,9 @@ $("manualServiceForm")?.addEventListener("submit", async event => {
 
   const origin = $("manualOrigin")?.value.trim() || "";
 
-  const type = $("manualServiceType")?.value || "ajustador";
+  const serviceType = $("manualServiceType")?.value || "ajustador";
 
-  const isTow = type === "grua";
+  const isTow = serviceType === "grua";
 
   const destination = $("manualDestination")?.value.trim() || "";
 
@@ -5620,13 +5712,13 @@ $("manualServiceForm")?.addEventListener("submit", async event => {
 
     servicio: {
 
-      tipo: type,
+      tipo: serviceType,
 
-      nombre: formatServiceType(type)
+      nombre: formatServiceType(serviceType)
 
     },
 
-    tipoServicio: type,
+    tipoServicio: serviceType,
 
     vehiculo: {
 
@@ -5728,6 +5820,10 @@ $("manualServiceForm")?.addEventListener("submit", async event => {
 
       });
 
+ 
+
+      openWhatsAppForSelectedProvider(payload, provider);
+
     }
 
  
@@ -5738,13 +5834,13 @@ $("manualServiceForm")?.addEventListener("submit", async event => {
 
       "Servicio manual creado",
 
-      `${folio} · ${formatServiceType(type)}`
+      `${folio} · ${formatServiceType(serviceType)}`
 
     );
 
  
 
-    manualServiceMessage(`Servicio ${folio} creado correctamente.`, "success");
+    manualServiceMessage(provider ? `Servicio ${folio} creado y asignado. Se abrió WhatsApp del proveedor.` : `Servicio ${folio} creado y enviado a proveedores disponibles.`, "success");
 
  
 
